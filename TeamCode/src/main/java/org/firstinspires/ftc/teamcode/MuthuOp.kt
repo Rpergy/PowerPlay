@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.drive.GamepadEventPS
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
-import org.firstinspires.ftc.teamcode.hardware.ActuationConstants
-import org.firstinspires.ftc.teamcode.hardware.Intake
-import org.firstinspires.ftc.teamcode.hardware.Lift
+import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
+import org.firstinspires.ftc.teamcode.subsystems.Intake
+import org.firstinspires.ftc.teamcode.subsystems.Lift
 
 @TeleOp(name = "MuthuOp")
 class MuthuOp: OpMode() {
@@ -18,9 +18,9 @@ class MuthuOp: OpMode() {
     private lateinit var lift: Lift
     private lateinit var gamepadEvent1: GamepadEventPS
     private lateinit var timer: ElapsedTime
+    private var mode = Mode.DRIVER_CONTROLLED
 
     private var slowMode = false
-    private var automated = false
 
     override fun init() {
         drive = SampleMecanumDrive(hardwareMap)
@@ -36,38 +36,45 @@ class MuthuOp: OpMode() {
     override fun loop() {
         PhotonCore.enable()
 
-        if(gamepadEvent1.leftStickButton())
-            slowMode = !slowMode
+        when (mode) {
+            Mode.DRIVER_CONTROLLED -> {
+                if (gamepadEvent1.dPadLeft()) {
+                    mode = Mode.AUTOMATED
+                }
+                if(gamepadEvent1.leftStickButton())
+                    slowMode = !slowMode
 
-        if(gamepadEvent1.rightStickButton())
-            automated = !automated
+                drive.setWeightedDrivePower(
+                    Pose2d(
+                        if (slowMode) -gamepad1.left_stick_y.toDouble() / 3 else -gamepad1.left_stick_y.toDouble(),
+                        if (slowMode) -gamepad1.left_stick_x.toDouble() / 3 else -gamepad1.left_stick_x.toDouble(),
+                        if (slowMode) -gamepad1.right_stick_x.toDouble() / 3 else -gamepad1.right_stick_x.toDouble()
+                    )
+                )
 
-        drive.setWeightedDrivePower(
-            Pose2d(
-                if (slowMode) -gamepad1.left_stick_y.toDouble() / 3 else -gamepad1.left_stick_y.toDouble(),
-                if (slowMode) -gamepad1.left_stick_x.toDouble() / 3 else -gamepad1.left_stick_x.toDouble(),
-                if (slowMode) -gamepad1.right_stick_x.toDouble() / 3 else -gamepad1.right_stick_x.toDouble()
-            )
-        )
+                intake.update(listOf(
+                    gamepad1.dpad_right, // Hold to intake
+                    gamepad1.dpad_up, // First level with arm
+                    gamepadEvent1.leftBumper() // Toggle claw
+                ))
 
-        if (automated) {
-            cycle()
-        } else {
-            intake.update(listOf(
-                gamepad1.dpad_right, // Hold to intake
-                gamepad1.dpad_up, // First level with arm
-                gamepadEvent1.leftBumper() // Toggle claw
-            ))
+                lift.update(listOf(
+                    gamepadEvent1.cross(), // Idle
+                    gamepadEvent1.circle(), // Second level
+                    gamepadEvent1.triangle(), // Third level
+                    gamepad1.right_bumper // Deposit
+                ))
+            }
 
-            lift.update(listOf(
-                gamepadEvent1.cross(), // Idle
-                gamepadEvent1.circle(), // Second level
-                gamepadEvent1.triangle(), // Third level
-                gamepad1.right_bumper // Deposit
-            ))
+            Mode.AUTOMATED -> {
+                if (gamepadEvent1.dPadLeft()) {
+                    mode = Mode.DRIVER_CONTROLLED
+                }
+                cycle()
+            }
         }
 
-        telemetry.addData("Automated", automated)
+        telemetry.addData("Mode", mode)
         telemetry.addData("Extension State", intake.extensionState)
         telemetry.addData("Claw State", intake.clawState)
         telemetry.addData("Depositor State", lift.depositorState)
@@ -77,7 +84,7 @@ class MuthuOp: OpMode() {
     private fun cycle() {
         intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
         intake.closeClaw()
-        update(500)
+        update(200)
         intake.updateExtensionState(Intake.ExtensionState.IDLE)
         update(1000)
         intake.openClaw()
@@ -95,8 +102,16 @@ class MuthuOp: OpMode() {
     private fun update(time: Long) {
         timer.reset()
         while(timer.milliseconds() <= time) {
+            if (gamepadEvent1.dPadLeft()) {
+                mode = Mode.DRIVER_CONTROLLED
+            }
             intake.update()
             lift.update()
         }
+    }
+
+    enum class Mode {
+        DRIVER_CONTROLLED,
+        AUTOMATED
     }
 }

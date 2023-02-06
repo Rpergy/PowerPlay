@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware
+package org.firstinspires.ftc.teamcode.subsystems
 
 class ActuationConstants {
     object LiftConstants {
@@ -17,7 +17,7 @@ class ActuationConstants {
 
     object ExtensionConstants {
         const val RETRACTED = 0.36
-        const val EXTENDED = 0.5
+        const val EXTENDED = 0.52
     }
 
     object ArmConstants {

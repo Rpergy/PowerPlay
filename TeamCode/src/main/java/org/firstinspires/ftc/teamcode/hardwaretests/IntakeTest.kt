@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.hardwareTests
+package org.firstinspires.ftc.teamcode.hardwaretests
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.CRServo
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.drive.GamepadEventPS
-import org.firstinspires.ftc.teamcode.hardware.ActuationConstants
+import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 
 @TeleOp(name="Intake Test")
 class IntakeTest: OpMode() {

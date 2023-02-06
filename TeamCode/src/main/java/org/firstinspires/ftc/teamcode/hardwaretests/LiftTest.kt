@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardwareTests
+package org.firstinspires.ftc.teamcode.hardwaretests
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.drive.GamepadEventPS
-import org.firstinspires.ftc.teamcode.hardware.ActuationConstants
 
 @TeleOp(name = "Lift Test")
 class LiftTest: OpMode() {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardwareTests;
+package org.firstinspires.ftc.teamcode.hardwaretests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.hardware.ActuationConstants;
+import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants;
 
 @Config
 @TeleOp(name = "Lift PIDF Test")
