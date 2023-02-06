@@ -17,6 +17,7 @@ class MuthuOp: OpMode() {
     private lateinit var intake: Intake
     private lateinit var lift: Lift
     private lateinit var gamepadEvent1: GamepadEventPS
+    private lateinit var gamepadEvent2: GamepadEventPS
     private lateinit var timer: ElapsedTime
     private var mode = Mode.DRIVER_CONTROLLED
 
@@ -27,6 +28,7 @@ class MuthuOp: OpMode() {
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
         gamepadEvent1 = GamepadEventPS(gamepad1)
+        gamepadEvent2 = GamepadEventPS(gamepad2)
         timer = ElapsedTime()
 
         telemetry.addLine("Initialized!")
@@ -38,7 +40,7 @@ class MuthuOp: OpMode() {
 
         when (mode) {
             Mode.DRIVER_CONTROLLED -> {
-                if (gamepadEvent1.dPadLeft()) {
+                if (gamepad1.triangle) {
                     mode = Mode.AUTOMATED
                 }
                 if(gamepadEvent1.leftStickButton())
@@ -53,21 +55,21 @@ class MuthuOp: OpMode() {
                 )
 
                 intake.update(listOf(
-                    gamepad1.dpad_right, // Hold to intake
-                    gamepad1.dpad_up, // First level with arm
+                    gamepad1.left_trigger > 0.5, // Hold to intake
+                    gamepad1.dpad_down, // First level with arm
                     gamepadEvent1.leftBumper() // Toggle claw
                 ))
 
                 lift.update(listOf(
-                    gamepadEvent1.cross(), // Idle
-                    gamepadEvent1.circle(), // Second level
-                    gamepadEvent1.triangle(), // Third level
+                    gamepadEvent2.dPadLeft(), // Idle
+                    gamepadEvent2.dPadRight(), // Second level
+                    gamepadEvent2.dPadUp(), // Third level
                     gamepad1.right_bumper // Deposit
                 ))
             }
 
             Mode.AUTOMATED -> {
-                if (gamepadEvent1.dPadLeft()) {
+                if (gamepad1.circle) {
                     mode = Mode.DRIVER_CONTROLLED
                 }
                 cycle()
@@ -82,6 +84,9 @@ class MuthuOp: OpMode() {
     }
 
     private fun cycle() {
+        if (gamepad1.circle) {
+            mode = Mode.DRIVER_CONTROLLED
+        }
         intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
         intake.closeClaw()
         update(200)
@@ -90,11 +95,11 @@ class MuthuOp: OpMode() {
         intake.openClaw()
         update(500)
         lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[2])
+        intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
         update(1000)
         lift.updateDepositorState(Lift.DepositorState.UP)
         update(500)
         lift.updateDepositorState(Lift.DepositorState.DOWN)
-        intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
         lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
         update(1000)
     }
@@ -102,7 +107,8 @@ class MuthuOp: OpMode() {
     private fun update(time: Long) {
         timer.reset()
         while(timer.milliseconds() <= time) {
-            if (gamepadEvent1.dPadLeft()) {
+            telemetry.addData("Circle Detected", gamepad1.circle)
+            if (gamepad1.circle) {
                 mode = Mode.DRIVER_CONTROLLED
             }
             intake.update()

@@ -21,8 +21,8 @@ class ActuationConstants {
     }
 
     object ArmConstants {
-        const val IDLE = 0.295
-        const val INTAKING = 0.224
+        const val IDLE = 0.3
+        const val INTAKING = 0.228
         const val DEPOSITING = 0.26
     }
 
