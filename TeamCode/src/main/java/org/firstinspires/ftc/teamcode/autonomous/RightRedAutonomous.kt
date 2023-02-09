@@ -19,8 +19,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import java.util.*
 
-@Autonomous(name = "Left Blue Autonomous")
-class LeftBlueAutonomous: LinearOpMode() {
+@Autonomous(name = "Right Red Autonomous")
+class RightRedAutonomous: LinearOpMode() {
     private val fx = 578.272
     private val fy = 578.272
     private val cx = 402.145
@@ -34,7 +34,7 @@ class LeftBlueAutonomous: LinearOpMode() {
 
     override fun runOpMode() {
         drive = SampleMecanumDrive(hardwareMap)
-        drive.poseEstimate = FieldConstants.LeftBlueAutonomous.startPosition
+        drive.poseEstimate = FieldConstants.RightRedAutonomous.startPosition
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
 
@@ -80,8 +80,8 @@ class LeftBlueAutonomous: LinearOpMode() {
         }
 
         val toCyclePosition = drive.trajectorySequenceBuilder(drive.poseEstimate)
-            .lineTo(FieldConstants.LeftBlueAutonomous.cyclePosition1)
-            .lineToLinearHeading(FieldConstants.LeftBlueAutonomous.cyclePosition2)
+            .lineTo(FieldConstants.RightRedAutonomous.cyclePosition1)
+            .lineToLinearHeading(FieldConstants.RightRedAutonomous.cyclePosition2)
             .build()
 
         drive.followTrajectorySequence(toCyclePosition)
@@ -116,10 +116,10 @@ class LeftBlueAutonomous: LinearOpMode() {
             ))
             .lineToLinearHeading(
                 when (tagId) {
-                    1 -> FieldConstants.LeftBlueAutonomous.parkPosition1
-                    2 -> FieldConstants.LeftBlueAutonomous.parkPosition2
-                    3 -> FieldConstants.LeftBlueAutonomous.parkPosition3
-                    else -> {FieldConstants.LeftBlueAutonomous.parkPosition2}
+                    1 -> FieldConstants.RightRedAutonomous.parkPosition1
+                    2 -> FieldConstants.RightRedAutonomous.parkPosition2
+                    3 -> FieldConstants.RightRedAutonomous.parkPosition3
+                    else -> {FieldConstants.RightRedAutonomous.parkPosition2}
                 })
             .build()
 
