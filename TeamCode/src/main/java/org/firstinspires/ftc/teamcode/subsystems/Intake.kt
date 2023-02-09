@@ -45,7 +45,7 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    private fun retract() {
+    fun retract() {
         if (extensionTimer.milliseconds() <= 200) {
             closeClaw()
         } else {
@@ -56,7 +56,7 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    private fun extend(armPosition: Double = ActuationConstants.ArmConstants.INTAKING) {
+    fun extend(armPosition: Double = ActuationConstants.ArmConstants.INTAKING) {
         leftArm.position = armPosition
         rightArm.position = armPosition
         leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
@@ -69,17 +69,21 @@ class Intake (hardwareMap: HardwareMap) {
     }
 
     fun openClaw() {
-        clawState = ClawState.OPEN
+        claw.position = ActuationConstants.ClawConstants.OPEN
     }
 
     fun closeClaw() {
-        clawState = ClawState.CLOSED
+        claw.position = ActuationConstants.ClawConstants.CLOSED
     }
 
     fun updateExtensionState(state: ExtensionState) {
         if (state == ExtensionState.EXTENDING)
             extensionTimer.reset()
         extensionState = state
+    }
+
+    fun updateClawState(state: ClawState) {
+        clawState = state
     }
 
     fun update(binds: List<Boolean>) {
@@ -103,9 +107,9 @@ class Intake (hardwareMap: HardwareMap) {
         }
 
         if (binds[2] && clawState == ClawState.OPEN) {
-            closeClaw()
+            updateClawState(ClawState.CLOSED)
         } else if (binds[2] && clawState == ClawState.CLOSED) {
-            openClaw()
+            updateClawState(ClawState.OPEN)
         }
     }
 

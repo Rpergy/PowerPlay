@@ -16,8 +16,8 @@ class ActuationConstants {
     }
 
     object ExtensionConstants {
-        const val RETRACTED = 0.36
-        const val EXTENDED = 0.52
+        const val RETRACTED = 0.365
+        const val EXTENDED = 0.53
     }
 
     object ArmConstants {

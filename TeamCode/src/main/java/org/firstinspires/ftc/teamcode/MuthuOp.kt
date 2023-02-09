@@ -77,6 +77,7 @@ class MuthuOp: OpMode() {
         }
 
         telemetry.addData("Mode", mode)
+        telemetry.addData("Circle Pressed Main Loop", gamepad1.circle)
         telemetry.addData("Extension State", intake.extensionState)
         telemetry.addData("Claw State", intake.clawState)
         telemetry.addData("Depositor State", lift.depositorState)
@@ -84,15 +85,13 @@ class MuthuOp: OpMode() {
     }
 
     private fun cycle() {
-        if (gamepad1.circle) {
-            mode = Mode.DRIVER_CONTROLLED
-        }
         intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
-        intake.closeClaw()
+        update(1000)
+        intake.updateClawState(Intake.ClawState.CLOSED)
         update(200)
         intake.updateExtensionState(Intake.ExtensionState.IDLE)
         update(1000)
-        intake.openClaw()
+        intake.updateClawState(Intake.ClawState.OPEN)
         update(500)
         lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[2])
         intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
@@ -101,16 +100,12 @@ class MuthuOp: OpMode() {
         update(500)
         lift.updateDepositorState(Lift.DepositorState.DOWN)
         lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
-        update(1000)
     }
 
     private fun update(time: Long) {
         timer.reset()
         while(timer.milliseconds() <= time) {
             telemetry.addData("Circle Detected", gamepad1.circle)
-            if (gamepad1.circle) {
-                mode = Mode.DRIVER_CONTROLLED
-            }
             intake.update()
             lift.update()
         }
