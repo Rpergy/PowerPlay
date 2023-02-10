@@ -87,12 +87,12 @@ class RightRedAutonomous: LinearOpMode() {
         drive.followTrajectorySequence(toCyclePosition)
 
         for (i in 0..4) {
-            lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[2])
+            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
             Thread.sleep(1000)
             lift.deposit()
             Thread.sleep(500)
             lift.idle()
-            lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
+            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 4) {
                 intake.extend(0.24 - i * 0.0045)
                 Thread.sleep(1000)

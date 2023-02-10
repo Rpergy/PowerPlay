@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 import org.firstinspires.ftc.teamcode.subsystems.Intake
 import org.firstinspires.ftc.teamcode.subsystems.Lift
 
-@TeleOp(name = "MuthuOp")
+@TeleOp(name = "MuthuOp\uD83D\uDC4C\uD83D\uDC4C\uD83D\uDE0D\uD83C\uDFB6\uD83C\uDFB6\uD83D\uDE0E\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83D\uDE08\uD83D\uDC7A\uD83D\uDC7A\uD83E\uDD23\uD83E\uDD23\uD83D\uDE15\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83E\uDD70\uD83D\uDE18")
 class MuthuOp: OpMode() {
     private lateinit var drive: SampleMecanumDrive
     private lateinit var intake: Intake
@@ -56,7 +56,7 @@ class MuthuOp: OpMode() {
 
                 intake.update(listOf(
                     gamepad1.left_trigger > 0.5, // Hold to intake
-                    gamepad1.dpad_down, // First level with arm
+                    gamepad2.dpad_down, // First level with arm
                     gamepadEvent1.leftBumper() // Toggle claw
                 ))
 
@@ -86,20 +86,20 @@ class MuthuOp: OpMode() {
 
     private fun cycle() {
         intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
-        update(1000)
+        update(500)
         intake.updateClawState(Intake.ClawState.CLOSED)
         update(200)
         intake.updateExtensionState(Intake.ExtensionState.IDLE)
         update(1000)
         intake.updateClawState(Intake.ClawState.OPEN)
         update(500)
-        lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[2])
-        intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+        lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
         update(1000)
+        intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
         lift.updateDepositorState(Lift.DepositorState.UP)
         update(500)
         lift.updateDepositorState(Lift.DepositorState.DOWN)
-        lift.setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
+        lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
     }
 
     private fun update(time: Long) {

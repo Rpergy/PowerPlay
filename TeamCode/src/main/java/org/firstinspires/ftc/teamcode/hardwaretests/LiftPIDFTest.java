@@ -36,7 +36,7 @@ public class LiftPIDFTest extends OpMode {
         controller.setPID(p, i, d);
         int position = lift.getCurrentPosition();
         double pid = controller.calculate(position, target);
-        double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * ActuationConstants.LiftConstants.f;
+        double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * ActuationConstants.LiftConstants.F;
         lift.setPower(pid + ff);
 
         telemetry.addData("Lift Position", position);

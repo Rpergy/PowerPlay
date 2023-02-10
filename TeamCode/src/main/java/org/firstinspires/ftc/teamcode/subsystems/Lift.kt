@@ -14,7 +14,7 @@ class Lift (hardwareMap: HardwareMap){
         if (hardwareMap.dcMotor.contains("lift")) {
             lift = hardwareMap.dcMotor.get("lift") as DcMotorEx
             lift.power = 1.0
-            setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
+            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             lift.mode = DcMotor.RunMode.RUN_TO_POSITION
             lift.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
@@ -45,15 +45,15 @@ class Lift (hardwareMap: HardwareMap){
     fun update(binds: List<Boolean>) {
 
         if (binds[0]) {
-           setLiftPosition(ActuationConstants.LiftConstants.liftPositions[0])
+           setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
         }
 
         if (binds[1]) {
-            setLiftPosition(ActuationConstants.LiftConstants.liftPositions[1])
+            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[1])
         }
 
         if (binds[2]) {
-            setLiftPosition(ActuationConstants.LiftConstants.liftPositions[2])
+            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
         }
 
         when (depositorState) {
