@@ -26,7 +26,8 @@ class Intake (hardwareMap: HardwareMap) {
 
         if (hardwareMap.servo.contains("rightExtension")) {
             rightExtension = hardwareMap.servo.get("rightExtension")
-            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_RIGHT
+            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_LEFT
+
         }
 
         if (hardwareMap.servo.contains("leftArm")) {
@@ -46,7 +47,7 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    fun retract() {
+    private fun retract() {
         if (retractionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.CLOSED)
         } else {
@@ -57,7 +58,7 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    fun extend(armPosition: Double = ActuationConstants.ArmConstants.INTAKING) {
+    private fun extend(armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (extensionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.OPEN)
         } else {
@@ -69,19 +70,11 @@ class Intake (hardwareMap: HardwareMap) {
     }
 
     private fun deposit() {
-        leftArm.position = ActuationConstants.ArmConstants.DEPOSITING
-        rightArm.position = ActuationConstants.ArmConstants.DEPOSITING
+        leftArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
+        rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
     }
 
-    fun openClaw() {
-        claw.position = ActuationConstants.ClawConstants.OPEN
-    }
-
-    fun closeClaw() {
-        claw.position = ActuationConstants.ClawConstants.CLOSED
-    }
-
-    fun updateExtensionState(state: ExtensionState) {
+    fun updateExtensionState(state: ExtensionState, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (state == ExtensionState.EXTENDING)
             retractionTimer.reset()
         else if (state == ExtensionState.IDLE) {
@@ -89,49 +82,43 @@ class Intake (hardwareMap: HardwareMap) {
         }
 
         extensionState = state
+
+        when(extensionState) {
+            ExtensionState.IDLE -> retract()
+            ExtensionState.EXTENDING -> extend(armPosition)
+            ExtensionState.DEPOSITING -> {
+                if (bind) {
+                    leftArm.position = ActuationConstants.ArmConstants.DOWN
+                    rightArm.position = ActuationConstants.ArmConstants.DOWN
+                } else {
+                    deposit()
+                }
+            }
+        }
     }
 
     fun updateClawState(state: ClawState) {
         clawState = state
+
+        when(clawState) {
+            ClawState.OPEN -> claw.position = ActuationConstants.ClawConstants.OPEN
+            ClawState.CLOSED -> claw.position = ActuationConstants.ClawConstants.CLOSED
+        }
     }
 
     fun update(binds: List<Boolean>) {
-        when(extensionState) {
-            ExtensionState.IDLE -> retract()
-            ExtensionState.EXTENDING -> extend()
-            ExtensionState.DEPOSITING -> deposit()
-        }
-
-        when(clawState) {
-            ClawState.OPEN -> claw.position = ActuationConstants.ClawConstants.OPEN
-            ClawState.CLOSED -> claw.position = ActuationConstants.ClawConstants.CLOSED
-        }
-
         if (binds[0]) {
             updateExtensionState(ExtensionState.EXTENDING)
-        } else if (binds[1]) {
+        } else if (binds[1] || binds[2]) {
             updateExtensionState(ExtensionState.DEPOSITING)
         } else {
-            updateExtensionState(ExtensionState.IDLE)
+            updateExtensionState(ExtensionState.IDLE, binds[2])
         }
 
-        if (binds[2] && clawState == ClawState.OPEN) {
+        if (binds[3] && clawState == ClawState.OPEN) {
             updateClawState(ClawState.CLOSED)
-        } else if (binds[2] && clawState == ClawState.CLOSED) {
+        } else if (binds[3] && clawState == ClawState.CLOSED) {
             updateClawState(ClawState.OPEN)
-        }
-    }
-
-    fun update() {
-        when(extensionState) {
-            ExtensionState.IDLE -> retract()
-            ExtensionState.EXTENDING -> extend()
-            ExtensionState.DEPOSITING -> deposit()
-        }
-
-        when(clawState) {
-            ClawState.OPEN -> claw.position = ActuationConstants.ClawConstants.OPEN
-            ClawState.CLOSED -> claw.position = ActuationConstants.ClawConstants.CLOSED
         }
     }
 

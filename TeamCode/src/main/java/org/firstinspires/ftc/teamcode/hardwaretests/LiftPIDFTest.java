@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants;
-
 @Config
 @TeleOp(name = "Lift PIDF Test")
 public class LiftPIDFTest extends OpMode {
@@ -36,7 +34,7 @@ public class LiftPIDFTest extends OpMode {
         controller.setPID(p, i, d);
         int position = lift.getCurrentPosition();
         double pid = controller.calculate(position, target);
-        double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * ActuationConstants.LiftConstants.F;
+        double ff = Math.cos(Math.toRadians(target / ticksInDegrees)) * f;
         lift.setPower(pid + ff);
 
         telemetry.addData("Lift Position", position);

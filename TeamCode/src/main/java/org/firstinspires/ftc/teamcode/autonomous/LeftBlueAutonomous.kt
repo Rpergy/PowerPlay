@@ -79,9 +79,12 @@ class LeftBlueAutonomous: LinearOpMode() {
             sleep(20)
         }
 
+        lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
+
         val toCyclePosition = drive.trajectorySequenceBuilder(drive.poseEstimate)
             .lineTo(FieldConstants.LeftBlueAutonomous.cyclePosition1)
             .lineToLinearHeading(FieldConstants.LeftBlueAutonomous.cyclePosition2)
+            .turn(Math.toRadians(-8.0))
             .build()
 
         drive.followTrajectorySequence(toCyclePosition)
@@ -92,15 +95,16 @@ class LeftBlueAutonomous: LinearOpMode() {
             lift.deposit()
             Thread.sleep(500)
             lift.idle()
+
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 4) {
-                intake.extend(0.24 - i * 0.0045)
+                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.24 - i * 0.0045)
                 Thread.sleep(1000)
-                intake.closeClaw()
+                intake.updateClawState(Intake.ClawState.CLOSED)
                 Thread.sleep(200)
-                intake.retract()
+                intake.updateExtensionState(Intake.ExtensionState.IDLE)
                 Thread.sleep(1000)
-                intake.openClaw()
+                intake.updateClawState(Intake.ClawState.OPEN)
                 Thread.sleep(500)
             } else {
                 Thread.sleep(1000)

@@ -223,7 +223,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(
                 coefficients.p, coefficients.i, coefficients.d,
-                coefficients.f * 14 / batteryVoltageSensor.getVoltage()
+                coefficients.f * 12 / batteryVoltageSensor.getVoltage()
         );
 
         for (DcMotorEx motor : motors) {
@@ -272,10 +272,11 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+        double scalar = 12 / batteryVoltageSensor.getVoltage();
+        leftFront.setPower(v * scalar);
+        leftRear.setPower(v1 * scalar);
+        rightRear.setPower(v2 * scalar);
+        rightFront.setPower(v3 * scalar);
     }
 
     @Override
