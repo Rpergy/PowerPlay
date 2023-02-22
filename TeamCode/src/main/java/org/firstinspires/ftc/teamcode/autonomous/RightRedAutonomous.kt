@@ -36,6 +36,7 @@ class RightRedAutonomous: LinearOpMode() {
         drive = SampleMecanumDrive(hardwareMap)
         drive.poseEstimate = FieldConstants.RightRedAutonomous.startPosition
         intake = Intake(hardwareMap)
+        intake.autoInit()
         lift = Lift(hardwareMap)
 
         val cameraMonitorViewId = hardwareMap.appContext.resources.getIdentifier(
@@ -88,40 +89,42 @@ class RightRedAutonomous: LinearOpMode() {
 
         drive.followTrajectorySequence(toCyclePosition)
 
-        for (i in 0..4) {
+        for (i in 0..5) {
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
             Thread.sleep(500)
-            lift.deposit()
+            lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
-            lift.idle()
-            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
-            if (i != 4) {
-                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.36 - i * 0.0045)
+            lift.updateDepositorState(Lift.DepositorState.DOWN)
+            lift.setLiftPosition(75)
+            if (i != 5) {
+                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.469 - i * 0.004)
                 Thread.sleep(1000)
                 intake.updateClawState(Intake.ClawState.CLOSED)
                 Thread.sleep(200)
-                intake.updateExtensionState(Intake.ExtensionState.IDLE)
+                intake.updateExtensionState(Intake.ExtensionState.IDLE, true)
                 Thread.sleep(1000)
                 intake.updateClawState(Intake.ClawState.OPEN)
                 Thread.sleep(500)
             } else {
+                intake.updateExtensionState(Intake.ExtensionState.IDLE)
                 Thread.sleep(1000)
             }
         }
 
         val toPark = drive.trajectorySequenceBuilder(toCyclePosition.end())
             .setVelConstraint(MinVelocityConstraint(listOf(
-                AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 1.5),
-                MecanumVelocityConstraint(DriveConstants.MAX_VEL * 1.5, DriveConstants.TRACK_WIDTH)
+                AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 2),
+                MecanumVelocityConstraint(DriveConstants.MAX_VEL * 2, DriveConstants.TRACK_WIDTH)
             )
 
             ))
+            .lineToLinearHeading(FieldConstants.RightRedAutonomous.parkingTransition)
             .lineToLinearHeading(
                 when (tagId) {
                     1 -> FieldConstants.RightRedAutonomous.parkPosition1
                     2 -> FieldConstants.RightRedAutonomous.parkPosition2
                     3 -> FieldConstants.RightRedAutonomous.parkPosition3
-                    else -> {FieldConstants.RightRedAutonomous.parkPosition2}
+                    else -> FieldConstants.RightRedAutonomous.parkPosition2
                 })
             .build()
 

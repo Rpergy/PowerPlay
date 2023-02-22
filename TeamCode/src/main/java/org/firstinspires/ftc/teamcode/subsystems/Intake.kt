@@ -47,14 +47,20 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    private fun retract() {
+    fun autoInit() {
+        leftArm.position = 0.53
+        rightArm.position = 0.53
+        claw.position = 0.69
+    }
+
+    private fun retract(extensionPosition: Double = ActuationConstants.ExtensionConstants.RETRACTED, armPosition: Double = ActuationConstants.ArmConstants.TRANSFER) {
         if (retractionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.CLOSED)
         } else {
-            leftArm.position = ActuationConstants.ArmConstants.IDLE
-            rightArm.position = ActuationConstants.ArmConstants.IDLE
-            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
-            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
+            leftArm.position = armPosition
+            rightArm.position = armPosition
+            leftExtension.position = extensionPosition
+            rightExtension.position = extensionPosition
         }
     }
 
@@ -74,7 +80,7 @@ class Intake (hardwareMap: HardwareMap) {
         rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
     }
 
-    fun updateExtensionState(state: ExtensionState, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    fun updateExtensionState(state: ExtensionState, adjusted: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (state == ExtensionState.EXTENDING)
             retractionTimer.reset()
         else if (state == ExtensionState.IDLE) {
@@ -84,10 +90,10 @@ class Intake (hardwareMap: HardwareMap) {
         extensionState = state
 
         when(extensionState) {
-            ExtensionState.IDLE -> retract()
+            ExtensionState.IDLE -> if (adjusted) retract(ActuationConstants.ExtensionConstants.TRANSFER, ActuationConstants.ArmConstants.TRANSFER) else retract()
             ExtensionState.EXTENDING -> extend(armPosition)
             ExtensionState.DEPOSITING -> {
-                if (bind) {
+                if (adjusted) {
                     leftArm.position = ActuationConstants.ArmConstants.DOWN
                     rightArm.position = ActuationConstants.ArmConstants.DOWN
                 } else {
@@ -110,9 +116,9 @@ class Intake (hardwareMap: HardwareMap) {
         if (binds[0]) {
             updateExtensionState(ExtensionState.EXTENDING)
         } else if (binds[1] || binds[2]) {
-            updateExtensionState(ExtensionState.DEPOSITING)
+            updateExtensionState(ExtensionState.DEPOSITING, binds[2])
         } else {
-            updateExtensionState(ExtensionState.IDLE, binds[2])
+            updateExtensionState(ExtensionState.IDLE)
         }
 
         if (binds[3] && clawState == ClawState.OPEN) {

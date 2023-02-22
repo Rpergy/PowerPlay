@@ -14,7 +14,7 @@ class Lift (hardwareMap: HardwareMap){
         if (hardwareMap.dcMotor.contains("lift")) {
             lift = hardwareMap.dcMotor.get("lift") as DcMotorEx
             lift.power = 1.0
-            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
+            setLiftPosition(0)
             lift.mode = DcMotor.RunMode.RUN_TO_POSITION
             lift.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         }
