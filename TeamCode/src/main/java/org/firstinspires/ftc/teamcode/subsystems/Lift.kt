@@ -40,10 +40,14 @@ class Lift (hardwareMap: HardwareMap){
 
     fun updateDepositorState(state: DepositorState) {
         depositorState = state
+
+        when (depositorState) {
+            DepositorState.DOWN -> idle()
+            DepositorState.UP -> deposit()
+        }
     }
 
     fun update(binds: List<Boolean>) {
-
         if (binds[0]) {
            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
         }
@@ -56,22 +60,10 @@ class Lift (hardwareMap: HardwareMap){
             setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
         }
 
-        when (depositorState) {
-            DepositorState.DOWN -> idle()
-            DepositorState.UP -> deposit()
-        }
-
         if (binds[3]) {
             updateDepositorState(DepositorState.UP)
         } else {
             updateDepositorState(DepositorState.DOWN)
-        }
-    }
-
-    fun update() {
-        when (depositorState) {
-            DepositorState.DOWN -> idle()
-            DepositorState.UP -> deposit()
         }
     }
 

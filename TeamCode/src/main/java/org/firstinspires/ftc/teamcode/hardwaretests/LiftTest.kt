@@ -5,15 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.drive.GamepadEventPS
 import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 
 @TeleOp(name = "Lift Test")
 class LiftTest: OpMode() {
-    lateinit var lift: DcMotorEx
-    lateinit var depositor: Servo
-
-    lateinit var gamepadEvent1: GamepadEventPS
+    private lateinit var lift: DcMotorEx
+    private lateinit var depositor: Servo
 
     override fun init() {
         if (hardwareMap.dcMotor.contains("lift")) {
@@ -27,7 +24,7 @@ class LiftTest: OpMode() {
         if (hardwareMap.servo.contains("depositor")) {
             depositor = hardwareMap.servo.get("depositor")
             depositor.direction = Servo.Direction.REVERSE
-            depositor.position = 0.0
+            depositor.position = ActuationConstants.DepositorConstants.targetPosition
         }
     }
 

@@ -21,12 +21,12 @@ class Intake (hardwareMap: HardwareMap) {
         if (hardwareMap.servo.contains("leftExtension")) {
             leftExtension = hardwareMap.servo.get("leftExtension")
             leftExtension.direction = Servo.Direction.REVERSE
-            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_LEFT
+            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
         }
 
         if (hardwareMap.servo.contains("rightExtension")) {
             rightExtension = hardwareMap.servo.get("rightExtension")
-            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_LEFT
+            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
 
         }
 
@@ -53,8 +53,8 @@ class Intake (hardwareMap: HardwareMap) {
         } else {
             leftArm.position = ActuationConstants.ArmConstants.IDLE
             rightArm.position = ActuationConstants.ArmConstants.IDLE
-            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_LEFT
-            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED_RIGHT
+            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
+            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
         }
     }
 
@@ -64,8 +64,8 @@ class Intake (hardwareMap: HardwareMap) {
         } else {
             leftArm.position = armPosition
             rightArm.position = armPosition
-            leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED_LEFT
-            rightExtension.position = ActuationConstants.ExtensionConstants.EXTENDED_RIGHT
+            leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
+            rightExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
         }
     }
 

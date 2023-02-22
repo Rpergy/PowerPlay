@@ -91,14 +91,14 @@ class LeftBlueAutonomous: LinearOpMode() {
 
         for (i in 0..4) {
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
-            Thread.sleep(1000)
+            Thread.sleep(500)
             lift.deposit()
             Thread.sleep(500)
             lift.idle()
 
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 4) {
-                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.24 - i * 0.0045)
+                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.36 - i * 0.0045)
                 Thread.sleep(1000)
                 intake.updateClawState(Intake.ClawState.CLOSED)
                 Thread.sleep(200)
