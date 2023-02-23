@@ -36,7 +36,6 @@ class RightRedAutonomous: LinearOpMode() {
         drive = SampleMecanumDrive(hardwareMap)
         drive.poseEstimate = FieldConstants.RightRedAutonomous.startPosition
         intake = Intake(hardwareMap)
-        intake.autoInit()
         lift = Lift(hardwareMap)
 
         val cameraMonitorViewId = hardwareMap.appContext.resources.getIdentifier(
@@ -95,13 +94,13 @@ class RightRedAutonomous: LinearOpMode() {
             lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.DOWN)
-            lift.setLiftPosition(75)
+            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 5) {
                 intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.469 - i * 0.004)
                 Thread.sleep(1000)
                 intake.updateClawState(Intake.ClawState.CLOSED)
                 Thread.sleep(200)
-                intake.updateExtensionState(Intake.ExtensionState.IDLE, true)
+                intake.updateExtensionState(Intake.ExtensionState.TRANSFERING)
                 Thread.sleep(1000)
                 intake.updateClawState(Intake.ClawState.OPEN)
                 Thread.sleep(500)
