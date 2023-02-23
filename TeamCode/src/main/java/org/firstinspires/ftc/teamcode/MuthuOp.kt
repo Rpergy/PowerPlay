@@ -118,7 +118,7 @@ class MuthuOp: OpMode() {
         when (timer.milliseconds()) {
             in 0.0 .. 500.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
             in 500.0 .. 700.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
-            in 700.0 .. 1700.0 -> intake.updateExtensionState(Intake.ExtensionState.IDLE)
+            in 700.0 .. 1700.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERING)
             in 1700.0 .. 2100.0 -> intake.updateClawState(Intake.ClawState.OPEN)
             in 2100.0 .. 2600.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
             in 2600.0 .. 2900.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
