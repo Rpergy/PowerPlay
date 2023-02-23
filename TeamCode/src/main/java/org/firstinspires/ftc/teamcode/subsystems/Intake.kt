@@ -9,6 +9,7 @@ class Intake (hardwareMap: HardwareMap) {
     private lateinit var rightExtension: Servo
     private var retractionTimer = ElapsedTime()
     private var extensionTimer = ElapsedTime()
+    private var transferTimer = ElapsedTime()
     var extensionState: ExtensionState = ExtensionState.IDLE
 
     private lateinit var leftArm: Servo
@@ -43,24 +44,27 @@ class Intake (hardwareMap: HardwareMap) {
 
         if (hardwareMap.servo.contains("claw")) {
             claw = hardwareMap.servo.get("claw")
-            claw.position = ActuationConstants.ClawConstants.OPEN
+            claw.position = ActuationConstants.ClawConstants.INIT
         }
     }
 
-    fun autoInit() {
-        leftArm.position = 0.53
-        rightArm.position = 0.53
-        claw.position = 0.69
+    private fun retract() {
+        if (retractionTimer.milliseconds() >= 200) {
+            leftArm.position = ActuationConstants.ArmConstants.IDLE
+            rightArm.position = ActuationConstants.ArmConstants.IDLE
+            leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
+            rightExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
+        }
     }
 
-    private fun retract(extensionPosition: Double = ActuationConstants.ExtensionConstants.RETRACTED, armPosition: Double = ActuationConstants.ArmConstants.TRANSFER) {
-        if (retractionTimer.milliseconds() <= 200) {
+    private fun transfer() {
+        if (transferTimer.milliseconds() <= 200) {
             updateClawState(ClawState.CLOSED)
         } else {
-            leftArm.position = armPosition
-            rightArm.position = armPosition
-            leftExtension.position = extensionPosition
-            rightExtension.position = extensionPosition
+            leftArm.position = ActuationConstants.ArmConstants.TRANSFER
+            rightArm.position = ActuationConstants.ArmConstants.TRANSFER
+            leftExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
+            rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
         }
     }
 
@@ -80,20 +84,22 @@ class Intake (hardwareMap: HardwareMap) {
         rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
     }
 
-    fun updateExtensionState(state: ExtensionState, adjusted: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
-        if (state == ExtensionState.EXTENDING)
+    fun updateExtensionState(state: ExtensionState, bind: Boolean, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+        if (state != ExtensionState.IDLE)
             retractionTimer.reset()
-        else if (state == ExtensionState.IDLE) {
+        if (state != ExtensionState.TRANSFERING)
+            transferTimer.reset()
+        if (state != ExtensionState.EXTENDING)
             extensionTimer.reset()
-        }
 
         extensionState = state
 
         when(extensionState) {
-            ExtensionState.IDLE -> if (adjusted) retract(ActuationConstants.ExtensionConstants.TRANSFER, ActuationConstants.ArmConstants.TRANSFER) else retract()
+            ExtensionState.IDLE -> retract()
+            ExtensionState.TRANSFERING -> transfer()
             ExtensionState.EXTENDING -> extend(armPosition)
             ExtensionState.DEPOSITING -> {
-                if (adjusted) {
+                if (bind) {
                     leftArm.position = ActuationConstants.ArmConstants.DOWN
                     rightArm.position = ActuationConstants.ArmConstants.DOWN
                 } else {
@@ -118,7 +124,7 @@ class Intake (hardwareMap: HardwareMap) {
         } else if (binds[1] || binds[2]) {
             updateExtensionState(ExtensionState.DEPOSITING, binds[2])
         } else {
-            updateExtensionState(ExtensionState.IDLE)
+            if (clawState == ClawState.CLOSED) transfer() else retract()
         }
 
         if (binds[3] && clawState == ClawState.OPEN) {
@@ -130,6 +136,7 @@ class Intake (hardwareMap: HardwareMap) {
 
     enum class ExtensionState {
         IDLE,
+        TRANSFERING,
         EXTENDING,
         DEPOSITING
     }
