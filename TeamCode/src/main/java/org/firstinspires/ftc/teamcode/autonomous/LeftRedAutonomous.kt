@@ -19,8 +19,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import java.util.*
 
-@Autonomous(name = "Right Red Autonomous")
-class RightRedAutonomous: LinearOpMode() {
+@Autonomous(name = "Left Red Autonomous")
+class LeftRedAutonomous: LinearOpMode() {
     private val fx = 578.272
     private val fy = 578.272
     private val cx = 402.145
@@ -34,7 +34,7 @@ class RightRedAutonomous: LinearOpMode() {
 
     override fun runOpMode() {
         drive = SampleMecanumDrive(hardwareMap)
-        drive.poseEstimate = FieldConstants.RightRedAutonomous.startPosition
+        drive.poseEstimate = FieldConstants.LeftRedAutonomous.startPosition
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
 
@@ -82,8 +82,8 @@ class RightRedAutonomous: LinearOpMode() {
         lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
 
         val toCyclePosition = drive.trajectorySequenceBuilder(drive.poseEstimate)
-            .lineTo(FieldConstants.RightRedAutonomous.cyclePosition1)
-            .lineToLinearHeading(FieldConstants.RightRedAutonomous.cyclePosition2)
+            .lineTo(FieldConstants.LeftRedAutonomous.cyclePosition1)
+            .lineToLinearHeading(FieldConstants.LeftRedAutonomous.cyclePosition2)
             .build()
 
         drive.followTrajectorySequence(toCyclePosition)
@@ -117,13 +117,13 @@ class RightRedAutonomous: LinearOpMode() {
             )
 
             ))
-            .lineToLinearHeading(FieldConstants.RightRedAutonomous.parkingTransition)
+            .lineToLinearHeading(FieldConstants.LeftRedAutonomous.parkingTransition)
             .lineToLinearHeading(
                 when (tagId) {
-                    1 -> FieldConstants.RightRedAutonomous.parkPosition1
-                    2 -> FieldConstants.RightRedAutonomous.parkPosition2
-                    3 -> FieldConstants.RightRedAutonomous.parkPosition3
-                    else -> FieldConstants.RightRedAutonomous.parkPosition2
+                    1 -> FieldConstants.LeftRedAutonomous.parkPosition1
+                    2 -> FieldConstants.LeftRedAutonomous.parkPosition2
+                    3 -> FieldConstants.LeftRedAutonomous.parkPosition3
+                    else -> FieldConstants.LeftRedAutonomous.parkPosition2
                 })
             .build()
 

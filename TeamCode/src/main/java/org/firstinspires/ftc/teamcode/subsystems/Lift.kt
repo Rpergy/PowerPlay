@@ -30,11 +30,11 @@ class Lift (hardwareMap: HardwareMap){
         lift.targetPosition = target
     }
 
-    fun idle() {
+    private fun idle() {
         depositor.position = ActuationConstants.DepositorConstants.DOWN
     }
 
-    fun deposit() {
+    private fun deposit() {
         depositor.position = ActuationConstants.DepositorConstants.UP
     }
 

@@ -49,7 +49,9 @@ class Intake (hardwareMap: HardwareMap) {
     }
 
     private fun retract() {
-        if (retractionTimer.milliseconds() >= 200) {
+        if (retractionTimer.milliseconds() <= 200) {
+            updateClawState(ClawState.CLOSED)
+        } else {
             leftArm.position = ActuationConstants.ArmConstants.IDLE
             rightArm.position = ActuationConstants.ArmConstants.IDLE
             leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
@@ -84,10 +86,10 @@ class Intake (hardwareMap: HardwareMap) {
         rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
     }
 
-    fun updateExtensionState(state: ExtensionState, bind: Boolean, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
-        if (state != ExtensionState.IDLE)
+    fun updateExtensionState(state: ExtensionState, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+        if (state == ExtensionState.EXTENDING)
             retractionTimer.reset()
-        if (state != ExtensionState.TRANSFERING)
+        if (state != ExtensionState.TRANSFERRING)
             transferTimer.reset()
         if (state != ExtensionState.EXTENDING)
             extensionTimer.reset()
@@ -96,7 +98,7 @@ class Intake (hardwareMap: HardwareMap) {
 
         when(extensionState) {
             ExtensionState.IDLE -> retract()
-            ExtensionState.TRANSFERING -> transfer()
+            ExtensionState.TRANSFERRING -> transfer()
             ExtensionState.EXTENDING -> extend(armPosition)
             ExtensionState.DEPOSITING -> {
                 if (bind) {
@@ -124,7 +126,7 @@ class Intake (hardwareMap: HardwareMap) {
         } else if (binds[1] || binds[2]) {
             updateExtensionState(ExtensionState.DEPOSITING, binds[2])
         } else {
-            if (clawState == ClawState.CLOSED) transfer() else retract()
+            if (clawState == ClawState.CLOSED) updateExtensionState(ExtensionState.TRANSFERRING) else updateExtensionState(ExtensionState.IDLE)
         }
 
         if (binds[3] && clawState == ClawState.OPEN) {
@@ -136,7 +138,7 @@ class Intake (hardwareMap: HardwareMap) {
 
     enum class ExtensionState {
         IDLE,
-        TRANSFERING,
+        TRANSFERRING,
         EXTENDING,
         DEPOSITING
     }
