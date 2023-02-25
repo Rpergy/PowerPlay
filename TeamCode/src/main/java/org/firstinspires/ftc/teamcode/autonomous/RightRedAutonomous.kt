@@ -27,7 +27,6 @@ class RightRedAutonomous: LinearOpMode() {
     private val cy = 221.506
     private val tagsize = 0.166
     private var tagId = 2
-
     private lateinit var drive: SampleMecanumDrive
     private lateinit var intake: Intake
     private lateinit var lift: Lift
@@ -96,8 +95,8 @@ class RightRedAutonomous: LinearOpMode() {
             lift.updateDepositorState(Lift.DepositorState.DOWN)
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 5) {
-                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, 0.469 - i * 0.0041)
-                Thread.sleep(1000)
+                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, false, ActuationConstants.ArmConstants.coneStackPositions[i])
+                Thread.sleep(800)
                 intake.updateClawState(Intake.ClawState.CLOSED)
                 Thread.sleep(300)
                 intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
