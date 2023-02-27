@@ -70,14 +70,14 @@ class Intake (hardwareMap: HardwareMap) {
         }
     }
 
-    private fun extend(armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    private fun extend(armPosition: Double, extensionPosition: Double) {
         if (extensionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.OPEN)
         } else {
             leftArm.position = armPosition
             rightArm.position = armPosition
-            leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
-            rightExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
+            leftExtension.position = extensionPosition
+            rightExtension.position = extensionPosition
         }
     }
 
@@ -86,7 +86,7 @@ class Intake (hardwareMap: HardwareMap) {
         rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
     }
 
-    fun updateExtensionState(state: ExtensionState, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    fun updateExtensionState(state: ExtensionState, fullyExtended: Boolean = false, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (state == ExtensionState.EXTENDING)
             retractionTimer.reset()
         if (state != ExtensionState.TRANSFERRING)
@@ -99,7 +99,7 @@ class Intake (hardwareMap: HardwareMap) {
         when(extensionState) {
             ExtensionState.IDLE -> retract()
             ExtensionState.TRANSFERRING -> transfer()
-            ExtensionState.EXTENDING -> extend(armPosition)
+            ExtensionState.EXTENDING -> extend(armPosition, if (fullyExtended) ActuationConstants.ExtensionConstants.FULLY_EXTENDED else ActuationConstants.ExtensionConstants.EXTENDED)
             ExtensionState.DEPOSITING -> {
                 if (bind) {
                     leftArm.position = ActuationConstants.ArmConstants.DOWN
@@ -124,7 +124,7 @@ class Intake (hardwareMap: HardwareMap) {
         if (binds[0]) {
             updateExtensionState(ExtensionState.EXTENDING)
         } else if (binds[1] || binds[2]) {
-            updateExtensionState(ExtensionState.DEPOSITING, binds[2])
+            updateExtensionState(ExtensionState.DEPOSITING, false, binds[2])
         } else {
             if (clawState == ClawState.CLOSED) updateExtensionState(ExtensionState.TRANSFERRING) else updateExtensionState(ExtensionState.IDLE)
         }

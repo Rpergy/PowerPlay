@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.arcrobotics.ftclib.controller.PIDController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -51,11 +52,9 @@ class Lift (hardwareMap: HardwareMap){
         if (binds[0]) {
            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
         }
-
         if (binds[1]) {
             setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[1])
         }
-
         if (binds[2]) {
             setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
         }

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 import org.firstinspires.ftc.teamcode.subsystems.Intake
 import org.firstinspires.ftc.teamcode.subsystems.Lift
 
-@TeleOp(name = "MuthuOp\uD83D\uDC4C\uD83D\uDC4C\uD83D\uDE0D\uD83C\uDFB6\uD83C\uDFB6\uD83D\uDE0E\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83D\uDE08\uD83D\uDC7A\uD83D\uDC7A\uD83E\uDD23\uD83E\uDD23\uD83D\uDE15\uD83D\uDE1C\uD83D\uDE2D\uD83E\uDD70\uD83E\uDD70\uD83D\uDE18\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD\uFDFD")
+@TeleOp(name = "TeleOp")
 class MuthuOp: OpMode() {
     private lateinit var drive: SampleMecanumDrive
     private lateinit var intake: Intake
