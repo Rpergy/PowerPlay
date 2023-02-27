@@ -116,13 +116,13 @@ class MuthuOp: OpMode() {
 
     private fun cycle() {
         when (timer.milliseconds()) {
-            in 0.0 .. 500.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
-            in 500.0 .. 700.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
-            in 700.0 .. 1700.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
-            in 1700.0 .. 2100.0 -> intake.updateClawState(Intake.ClawState.OPEN)
-            in 2100.0 .. 2600.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
-            in 2600.0 .. 2900.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
-            in 2900.0 .. 3100.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 0.0 .. 300.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 300.0 .. 500.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
+            in 500.0 .. 1500.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
+            in 1500.0 .. 1900.0 -> intake.updateClawState(Intake.ClawState.OPEN)
+            in 1900.0 .. 2400.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
+            in 2400.0 .. 2700.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
+            in 2700.0 .. 2900.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
             else -> {
                 lift.updateDepositorState(Lift.DepositorState.DOWN)
                 lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
