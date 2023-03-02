@@ -88,7 +88,7 @@ class RightRedAutonomous: LinearOpMode() {
         drive.followTrajectorySequence(toCyclePosition)
 
         for (i in 0..5) {
-            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
+            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
@@ -109,7 +109,7 @@ class RightRedAutonomous: LinearOpMode() {
                 Thread.sleep(400)
             } else {
                 intake.updateExtensionState(Intake.ExtensionState.IDLE)
-                Thread.sleep(1000)
+                Thread.sleep(500)
             }
         }
 
@@ -117,9 +117,8 @@ class RightRedAutonomous: LinearOpMode() {
             .setVelConstraint(MinVelocityConstraint(listOf(
                 AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 2),
                 MecanumVelocityConstraint(DriveConstants.MAX_VEL * 2, DriveConstants.TRACK_WIDTH)
-            )
+            )))
 
-            ))
             .lineToLinearHeading(FieldConstants.RightRedAutonomous.parkingTransition)
             .lineToLinearHeading(
                 when (tagId) {

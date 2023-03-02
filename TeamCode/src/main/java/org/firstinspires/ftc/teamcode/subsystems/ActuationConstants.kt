@@ -6,7 +6,12 @@ class ActuationConstants {
     @Config
     object LiftConstants {
         @JvmField var targetPosition = 0
-        val LIFT_POSITIONS = arrayListOf(70, 190, 340)
+        val LIFT_POSITIONS = arrayListOf(
+            65, // Transfer preset
+            68, // Idle preset
+            180, // Medium junction preset
+            330 // High junction preset
+        )
     }
 
     @Config
@@ -19,8 +24,8 @@ class ActuationConstants {
     @Config
     object ExtensionConstants {
         @JvmField var targetPosition = 0.47
-        const val RETRACTED = 0.462
-        const val TRANSFER = 0.487
+        const val RETRACTED = 0.463
+        const val TRANSFER = 0.483
         const val EXTENDED = 0.52
         const val FULLY_EXTENDED = 0.529
     }
@@ -31,7 +36,7 @@ class ActuationConstants {
         val coneStackPositions = arrayListOf(0.467, 0.463, 0.459, 0.454, 0.450)
         const val IDLE = 0.529
         const val TRANSFER = 0.534
-        const val DOWN = 0.4525
+        const val DOWN = 0.452
         const val FIRST_JUNCTION = 0.495
     }
 

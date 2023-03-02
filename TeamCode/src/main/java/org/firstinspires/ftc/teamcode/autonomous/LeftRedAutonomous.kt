@@ -89,13 +89,13 @@ class LeftRedAutonomous: LinearOpMode() {
         drive.followTrajectorySequence(toCyclePosition)
 
         for (i in 0..5) {
-            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
+            lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.DOWN)
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
-            if (i != 5) {
+            if (i == 5) {
                 intake.updateExtensionState(Intake.ExtensionState.EXTENDING,
                     fullyExtended = true,
                     bind = false,
@@ -110,7 +110,7 @@ class LeftRedAutonomous: LinearOpMode() {
                 Thread.sleep(400)
             } else {
                 intake.updateExtensionState(Intake.ExtensionState.IDLE)
-                Thread.sleep(1000)
+                Thread.sleep(500)
             }
         }
 
@@ -118,9 +118,8 @@ class LeftRedAutonomous: LinearOpMode() {
             .setVelConstraint(MinVelocityConstraint(listOf(
                 AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 2),
                 MecanumVelocityConstraint(DriveConstants.MAX_VEL * 2, DriveConstants.TRACK_WIDTH)
-            )
+            )))
 
-            ))
             .lineToLinearHeading(FieldConstants.LeftRedAutonomous.parkingTransition)
             .lineToLinearHeading(
                 when (tagId) {

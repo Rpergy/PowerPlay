@@ -50,16 +50,23 @@ class Lift (hardwareMap: HardwareMap){
 
     fun update(binds: List<Boolean>) {
         if (binds[0]) {
-           setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
+           setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[1])
         }
         if (binds[1]) {
-            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[1])
+            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
         }
         if (binds[2]) {
-            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
+            setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
         }
 
         if (binds[3]) {
+            lift.targetPosition -= 2
+        }
+        if (binds[4]) {
+            lift.targetPosition += 2
+        }
+
+        if (binds[5]) {
             updateDepositorState(DepositorState.UP)
         } else {
             updateDepositorState(DepositorState.DOWN)

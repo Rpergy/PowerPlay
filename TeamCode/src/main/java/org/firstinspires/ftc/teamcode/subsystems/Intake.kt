@@ -9,7 +9,6 @@ class Intake (hardwareMap: HardwareMap) {
     private lateinit var rightExtension: Servo
     private var retractionTimer = ElapsedTime()
     private var extensionTimer = ElapsedTime()
-    private var transferTimer = ElapsedTime()
     var extensionState: ExtensionState = ExtensionState.IDLE
 
     private lateinit var leftArm: Servo
@@ -60,14 +59,10 @@ class Intake (hardwareMap: HardwareMap) {
     }
 
     private fun transfer() {
-        if (transferTimer.milliseconds() <= 200) {
-            updateClawState(ClawState.CLOSED)
-        } else {
-            leftArm.position = ActuationConstants.ArmConstants.TRANSFER
-            rightArm.position = ActuationConstants.ArmConstants.TRANSFER
-            leftExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
-            rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
-        }
+        leftArm.position = ActuationConstants.ArmConstants.TRANSFER
+        rightArm.position = ActuationConstants.ArmConstants.TRANSFER
+        leftExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
+        rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
     }
 
     private fun extend(armPosition: Double, extensionPosition: Double) {
@@ -87,12 +82,10 @@ class Intake (hardwareMap: HardwareMap) {
     }
 
     fun updateExtensionState(state: ExtensionState, fullyExtended: Boolean = false, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+        if (state == ExtensionState.IDLE)
+            extensionTimer.reset()
         if (state == ExtensionState.EXTENDING)
             retractionTimer.reset()
-        if (state != ExtensionState.TRANSFERRING)
-            transferTimer.reset()
-        if (state != ExtensionState.EXTENDING)
-            extensionTimer.reset()
 
         extensionState = state
 
@@ -126,7 +119,7 @@ class Intake (hardwareMap: HardwareMap) {
         } else if (binds[1] || binds[2]) {
             updateExtensionState(ExtensionState.DEPOSITING, false, binds[2])
         } else {
-            if (clawState == ClawState.CLOSED) updateExtensionState(ExtensionState.TRANSFERRING) else updateExtensionState(ExtensionState.IDLE)
+            updateExtensionState(ExtensionState.IDLE)
         }
 
         if (binds[3] && clawState == ClawState.OPEN) {

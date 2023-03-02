@@ -17,8 +17,10 @@ class MuthuOp: OpMode() {
     private lateinit var drive: SampleMecanumDrive
     private lateinit var intake: Intake
     private lateinit var lift: Lift
+
     private lateinit var gamepadEvent1: GamepadEventPS
     private lateinit var gamepadEvent2: GamepadEventPS
+
     private lateinit var runtime: ElapsedTime
     private lateinit var timer: ElapsedTime
 
@@ -30,8 +32,10 @@ class MuthuOp: OpMode() {
         drive = SampleMecanumDrive(hardwareMap)
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
+
         gamepadEvent1 = GamepadEventPS(gamepad1)
         gamepadEvent2 = GamepadEventPS(gamepad2)
+
         runtime = ElapsedTime()
         timer = ElapsedTime()
 
@@ -48,11 +52,11 @@ class MuthuOp: OpMode() {
                 if (gamepadEvent1.triangle())
                     mode = Mode.AUTOMATED
 
-                if (gamepadEvent1.leftStickButton())
-                    fieldCentric = !fieldCentric
-
-                if(gamepadEvent1.rightStickButton())
+                if(gamepadEvent1.leftStickButton())
                     slowMode = !slowMode
+
+                if (gamepadEvent1.rightStickButton())
+                    fieldCentric = !fieldCentric
 
                 if (fieldCentric) {
                     val input = Vector2d (
@@ -86,8 +90,10 @@ class MuthuOp: OpMode() {
 
                 lift.update(listOf(
                     gamepadEvent2.dPadLeft(), // Idle
-                    gamepadEvent2.dPadRight(), // Second level
-                    gamepadEvent2.dPadUp(), // Third level
+                    gamepadEvent2.dPadRight(), // Medium junction
+                    gamepadEvent2.dPadUp(), // High junction
+                    gamepad2.left_trigger > 0.5, // Manually lower lift
+                    gamepad2.right_trigger > 0.5, // Manually raise lift
                     gamepad1.right_bumper // Deposit
                 ))
 
@@ -108,6 +114,7 @@ class MuthuOp: OpMode() {
         telemetry.addData("Heading", drive.poseEstimate.heading)
         telemetry.addData("Mode", mode)
         telemetry.addData("Drive Mode", if (fieldCentric) "Field Centric" else "Robot Centric")
+        telemetry.addData("Slow Mode", slowMode)
         telemetry.addData("Extension State", intake.extensionState)
         telemetry.addData("Claw State", intake.clawState)
         telemetry.addData("Depositor State", lift.depositorState)
@@ -116,13 +123,13 @@ class MuthuOp: OpMode() {
 
     private fun cycle() {
         when (timer.milliseconds()) {
-            in 0.0 .. 300.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
-            in 300.0 .. 500.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
-            in 500.0 .. 1500.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
-            in 1500.0 .. 1900.0 -> intake.updateClawState(Intake.ClawState.OPEN)
-            in 1900.0 .. 2400.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[2])
-            in 2400.0 .. 2700.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
-            in 2700.0 .. 2900.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 0.0 .. 400.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 400.0 .. 600.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
+            in 600.0 .. 1600.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
+            in 1600.0 ..  2000.0 -> intake.updateClawState(Intake.ClawState.OPEN)
+            in 2000.0 .. 2500.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
+            in 2500.0 .. 2800.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
+            in 2800.0 .. 3000.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
             else -> {
                 lift.updateDepositorState(Lift.DepositorState.DOWN)
                 lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
