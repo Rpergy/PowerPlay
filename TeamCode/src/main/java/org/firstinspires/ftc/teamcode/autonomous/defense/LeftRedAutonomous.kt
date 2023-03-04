@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous
+package org.firstinspires.ftc.teamcode.autonomous.defense
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint
@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.autonomous.FieldConstants
 import org.firstinspires.ftc.teamcode.cv.AprilTagDetectionPipeline
 import org.firstinspires.ftc.teamcode.drive.DriveConstants
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
@@ -19,7 +20,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import java.util.*
 
-@Autonomous(name = "Left Red Autonomous")
+@Autonomous(name = "Left Red Autonomous Rooster")
 class LeftRedAutonomous: LinearOpMode() {
     private val fx = 578.272
     private val fy = 578.272
@@ -88,14 +89,14 @@ class LeftRedAutonomous: LinearOpMode() {
 
         drive.followTrajectorySequence(toCyclePosition)
 
-        for (i in 0..5) {
+        for (i in 0..4) {
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.DOWN)
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
-            if (i != 5) {
+            if (i != 4) {
                 intake.updateExtensionState(Intake.ExtensionState.EXTENDING, ActuationConstants.ArmConstants.coneStackPositions[i])
                 Thread.sleep(800)
                 intake.updateClawState(Intake.ClawState.CLOSED)

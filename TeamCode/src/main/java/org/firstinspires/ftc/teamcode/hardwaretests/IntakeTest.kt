@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.hardwaretests
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 
+@Disabled
 @TeleOp(name="Intake Test")
 class IntakeTest: OpMode() {
     private lateinit var leftExtension: Servo

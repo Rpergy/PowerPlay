@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous
+package org.firstinspires.ftc.teamcode.autonomous.defense
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint
@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.autonomous.FieldConstants
 import org.firstinspires.ftc.teamcode.cv.AprilTagDetectionPipeline
 import org.firstinspires.ftc.teamcode.drive.DriveConstants
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
@@ -19,8 +20,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import java.util.*
 
-@Autonomous(name = "Left Red Autonomous")
-class LeftRedAutonomous: LinearOpMode() {
+@Autonomous(name = "Left Blue Autonomous Rooster")
+class LeftBlueAutonomous: LinearOpMode() {
     private val fx = 578.272
     private val fy = 578.272
     private val cx = 402.145
@@ -34,7 +35,7 @@ class LeftRedAutonomous: LinearOpMode() {
 
     override fun runOpMode() {
         drive = SampleMecanumDrive(hardwareMap)
-        drive.poseEstimate = FieldConstants.LeftRedAutonomous.startPosition
+        drive.poseEstimate = FieldConstants.LeftBlueAutonomous.startPosition
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
 
@@ -82,20 +83,20 @@ class LeftRedAutonomous: LinearOpMode() {
         lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
 
         val toCyclePosition = drive.trajectorySequenceBuilder(drive.poseEstimate)
-            .lineTo(FieldConstants.LeftRedAutonomous.cyclePosition1)
-            .lineToLinearHeading(FieldConstants.LeftRedAutonomous.cyclePosition2)
+            .lineTo(FieldConstants.LeftBlueAutonomous.cyclePosition1)
+            .lineToLinearHeading(FieldConstants.LeftBlueAutonomous.cyclePosition2)
             .build()
 
         drive.followTrajectorySequence(toCyclePosition)
 
-        for (i in 0..5) {
+        for (i in 0..4) {
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.UP)
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.DOWN)
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
-            if (i != 5) {
+            if (i != 4) {
                 intake.updateExtensionState(Intake.ExtensionState.EXTENDING, ActuationConstants.ArmConstants.coneStackPositions[i])
                 Thread.sleep(800)
                 intake.updateClawState(Intake.ClawState.CLOSED)
@@ -116,13 +117,13 @@ class LeftRedAutonomous: LinearOpMode() {
                 MecanumVelocityConstraint(DriveConstants.MAX_VEL * 2, DriveConstants.TRACK_WIDTH)
             )))
 
-            .lineToLinearHeading(FieldConstants.LeftRedAutonomous.parkingTransition)
+            .lineToLinearHeading(FieldConstants.LeftBlueAutonomous.parkingTransition)
             .lineToLinearHeading(
                 when (tagId) {
-                    1 -> FieldConstants.LeftRedAutonomous.parkPosition1
-                    2 -> FieldConstants.LeftRedAutonomous.parkPosition2
-                    3 -> FieldConstants.LeftRedAutonomous.parkPosition3
-                    else -> FieldConstants.LeftRedAutonomous.parkPosition2
+                    1 -> FieldConstants.LeftBlueAutonomous.parkPosition1
+                    2 -> FieldConstants.LeftBlueAutonomous.parkPosition2
+                    3 -> FieldConstants.LeftBlueAutonomous.parkPosition3
+                    else -> FieldConstants.LeftBlueAutonomous.parkPosition2
                 })
             .build()
 

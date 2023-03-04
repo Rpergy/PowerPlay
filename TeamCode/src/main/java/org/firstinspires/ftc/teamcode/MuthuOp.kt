@@ -6,7 +6,7 @@ import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.drive.GamepadEventPS
+import org.firstinspires.ftc.teamcode.util.GamepadEventPS
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 import org.firstinspires.ftc.teamcode.subsystems.Intake
@@ -21,7 +21,6 @@ class MuthuOp: OpMode() {
     private lateinit var gamepadEvent1: GamepadEventPS
     private lateinit var gamepadEvent2: GamepadEventPS
 
-    private lateinit var runtime: ElapsedTime
     private lateinit var timer: ElapsedTime
 
     private var mode = Mode.DRIVER_CONTROLLED
@@ -33,10 +32,11 @@ class MuthuOp: OpMode() {
         intake = Intake(hardwareMap)
         lift = Lift(hardwareMap)
 
-        gamepadEvent1 = GamepadEventPS(gamepad1)
-        gamepadEvent2 = GamepadEventPS(gamepad2)
+        gamepadEvent1 =
+            GamepadEventPS(gamepad1)
+        gamepadEvent2 =
+            GamepadEventPS(gamepad2)
 
-        runtime = ElapsedTime()
         timer = ElapsedTime()
 
         telemetry.addLine("Initialized!")
@@ -83,8 +83,12 @@ class MuthuOp: OpMode() {
 
                 intake.update(listOf(
                     gamepad1.left_trigger > 0.5, // Hold to intake
-                    gamepad2.dpad_down, // First level
+                    gamepad2.dpad_down, // Low junction
                     gamepad1.right_trigger > 0.5, // Lower arm
+                    gamepad2.triangle, // Cone stack top cone
+                    gamepad2.circle, // Cone stack second cone
+                    gamepad2.cross, // Cone stack third cone
+                    gamepad2.square, // Cone stack fourth cone
                     gamepadEvent1.leftBumper() // Toggle claw
                 ))
 
@@ -108,10 +112,6 @@ class MuthuOp: OpMode() {
             }
         }
 
-        if (runtime.seconds() == 110.0)
-            gamepad1.rumble(500)
-
-        telemetry.addData("Heading", drive.poseEstimate.heading)
         telemetry.addData("Mode", mode)
         telemetry.addData("Drive Mode", if (fieldCentric) "Field Centric" else "Robot Centric")
         telemetry.addData("Slow Mode", slowMode)

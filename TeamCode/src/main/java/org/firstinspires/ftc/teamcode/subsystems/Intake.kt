@@ -65,23 +65,23 @@ class Intake (hardwareMap: HardwareMap) {
         rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
     }
 
-    private fun extend(armPosition: Double, extensionPosition: Double) {
+    private fun extend(armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (extensionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.OPEN)
         } else {
             leftArm.position = armPosition
             rightArm.position = armPosition
-            leftExtension.position = extensionPosition
-            rightExtension.position = extensionPosition
+            leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
+            rightExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
         }
     }
 
-    private fun deposit() {
-        leftArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
-        rightArm.position = ActuationConstants.ArmConstants.FIRST_JUNCTION
+    private fun deposit(armPosition: Double) {
+        leftArm.position = armPosition
+        rightArm.position = armPosition
     }
 
-    fun updateExtensionState(state: ExtensionState, fullyExtended: Boolean = false, bind: Boolean = false, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    fun updateExtensionState(state: ExtensionState, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (state == ExtensionState.IDLE)
             extensionTimer.reset()
         if (state == ExtensionState.EXTENDING)
@@ -92,15 +92,8 @@ class Intake (hardwareMap: HardwareMap) {
         when(extensionState) {
             ExtensionState.IDLE -> retract()
             ExtensionState.TRANSFERRING -> transfer()
-            ExtensionState.EXTENDING -> extend(armPosition, if (fullyExtended) ActuationConstants.ExtensionConstants.FULLY_EXTENDED else ActuationConstants.ExtensionConstants.EXTENDED)
-            ExtensionState.DEPOSITING -> {
-                if (bind) {
-                    leftArm.position = ActuationConstants.ArmConstants.DOWN
-                    rightArm.position = ActuationConstants.ArmConstants.DOWN
-                } else {
-                    deposit()
-                }
-            }
+            ExtensionState.EXTENDING -> extend(armPosition)
+            ExtensionState.MANUAL_CONTROL -> deposit(armPosition)
         }
     }
 
@@ -116,15 +109,25 @@ class Intake (hardwareMap: HardwareMap) {
     fun update(binds: List<Boolean>) {
         if (binds[0]) {
             updateExtensionState(ExtensionState.EXTENDING)
-        } else if (binds[1] || binds[2]) {
-            updateExtensionState(ExtensionState.DEPOSITING, false, binds[2])
+        } else if (binds[1]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.FIRST_JUNCTION)
+        } else if (binds[2]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.DOWN)
+        } else if (binds[3]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.coneStackPositions[0])
+        } else if (binds[4]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.coneStackPositions[1])
+        } else if (binds[5]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.coneStackPositions[2])
+        } else if (binds[6]) {
+            updateExtensionState(ExtensionState.MANUAL_CONTROL, ActuationConstants.ArmConstants.coneStackPositions[3])
         } else {
             updateExtensionState(ExtensionState.IDLE)
         }
 
-        if (binds[3] && clawState == ClawState.OPEN) {
+        if (binds[7] && clawState == ClawState.OPEN) {
             updateClawState(ClawState.CLOSED)
-        } else if (binds[3] && clawState == ClawState.CLOSED) {
+        } else if (binds[7] && clawState == ClawState.CLOSED) {
             updateClawState(ClawState.OPEN)
         }
     }
@@ -133,7 +136,7 @@ class Intake (hardwareMap: HardwareMap) {
         IDLE,
         TRANSFERRING,
         EXTENDING,
-        DEPOSITING
+        MANUAL_CONTROL
     }
 
     enum class ClawState {
