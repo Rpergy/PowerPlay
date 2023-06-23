@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstra
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.cv.AprilTagDetectionPipeline
@@ -67,9 +68,10 @@ class RightRedAutonomous: LinearOpMode() {
             val currentDetections: ArrayList<AprilTagDetection> = pipeline.latestDetections
 
             if (currentDetections.size != 0) {
-                when (currentDetections[0].id) {
-                    11 -> tagId = 1
-                    15 -> tagId = 3
+                tagId = when (currentDetections[0].id) {
+                    11 -> 1
+                    15 -> 3
+                    else -> 2
                 }
             }
 
@@ -91,21 +93,22 @@ class RightRedAutonomous: LinearOpMode() {
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
             Thread.sleep(500)
             lift.updateDepositorState(Lift.DepositorState.UP)
-            Thread.sleep(500)
+            Thread.sleep(600)
             lift.updateDepositorState(Lift.DepositorState.DOWN)
             lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])
             if (i != 5) {
-                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, ActuationConstants.ArmConstants.coneStackPositions[i])
-                Thread.sleep(800)
+                intake.updateExtensionState(Intake.ExtensionState.EXTENDING, ActuationConstants.ArmConstants.coneStackPositions[i], if (i < 4) ActuationConstants.ExtensionConstants.EXTENDED else ActuationConstants.ExtensionConstants.FULLY_EXTENDED)
+                Thread.sleep(650)
                 intake.updateClawState(Intake.ClawState.CLOSED)
-                Thread.sleep(300)
-                intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
-                Thread.sleep(1000)
-                intake.updateClawState(Intake.ClawState.OPEN)
                 Thread.sleep(400)
+                intake.liftArm()
+                Thread.sleep(300)
+                intake.autoTransfer()
+                Thread.sleep(650)
+                intake.updateClawState(Intake.ClawState.OPEN)
+                Thread.sleep(300)
             } else {
                 intake.updateExtensionState(Intake.ExtensionState.IDLE)
-                Thread.sleep(500)
             }
         }
 

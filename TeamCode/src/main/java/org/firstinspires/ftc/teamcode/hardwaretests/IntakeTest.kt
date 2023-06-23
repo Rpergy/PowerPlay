@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 
-@Disabled
 @TeleOp(name="Intake Test")
 class IntakeTest: OpMode() {
     private lateinit var leftExtension: Servo
@@ -20,7 +19,6 @@ class IntakeTest: OpMode() {
     override fun init() {
         if (hardwareMap.servo.contains("leftExtension")) {
             leftExtension = hardwareMap.servo.get("leftExtension")
-            leftExtension.direction = Servo.Direction.REVERSE
             leftExtension.position = ActuationConstants.ExtensionConstants.targetPosition
         }
 
@@ -31,7 +29,6 @@ class IntakeTest: OpMode() {
 
         if (hardwareMap.servo.contains("leftArm")) {
             leftArm = hardwareMap.servo.get("leftArm")
-            leftArm.direction = Servo.Direction.REVERSE
             leftArm.position = ActuationConstants.ArmConstants.targetPosition
         }
 
@@ -47,10 +44,10 @@ class IntakeTest: OpMode() {
     }
 
     override fun loop() {
-        leftExtension.position = ActuationConstants.ExtensionConstants.targetPosition
-        rightExtension.position = ActuationConstants.ExtensionConstants.targetPosition
         leftArm.position = ActuationConstants.ArmConstants.targetPosition
         rightArm.position = ActuationConstants.ArmConstants.targetPosition
+        leftExtension.position = ActuationConstants.ExtensionConstants.targetPosition
+        rightExtension.position = ActuationConstants.ExtensionConstants.targetPosition
         claw.position = ActuationConstants.ClawConstants.targetPosition
 
         telemetry.addData("Left Extension Position: ", leftExtension.position)

@@ -20,7 +20,6 @@ class Intake (hardwareMap: HardwareMap) {
     init {
         if (hardwareMap.servo.contains("leftExtension")) {
             leftExtension = hardwareMap.servo.get("leftExtension")
-            leftExtension.direction = Servo.Direction.REVERSE
             leftExtension.position = ActuationConstants.ExtensionConstants.RETRACTED
         }
 
@@ -32,13 +31,14 @@ class Intake (hardwareMap: HardwareMap) {
 
         if (hardwareMap.servo.contains("leftArm")) {
             leftArm = hardwareMap.servo.get("leftArm")
-            leftArm.direction = Servo.Direction.REVERSE
             leftArm.position = ActuationConstants.ArmConstants.IDLE
+//            leftArm.direction = Servo.Direction.REVERSE
         }
 
         if (hardwareMap.servo.contains("rightArm")) {
             rightArm = hardwareMap.servo.get("rightArm")
             rightArm.position = ActuationConstants.ArmConstants.IDLE
+//            rightArm.direction = Servo.Direction.REVERSE
         }
 
         if (hardwareMap.servo.contains("claw")) {
@@ -65,14 +65,24 @@ class Intake (hardwareMap: HardwareMap) {
         rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
     }
 
-    private fun extend(armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    fun liftArm() {
+        leftArm.position = ActuationConstants.ArmConstants.TRANSFER
+        rightArm.position = ActuationConstants.ArmConstants.TRANSFER
+    }
+
+    fun autoTransfer() {
+        leftExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
+        rightExtension.position = ActuationConstants.ExtensionConstants.TRANSFER
+    }
+
+    private fun extend(extensionPosition: Double = ActuationConstants.ExtensionConstants.EXTENDED, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
         if (extensionTimer.milliseconds() <= 200) {
             updateClawState(ClawState.OPEN)
         } else {
             leftArm.position = armPosition
             rightArm.position = armPosition
-            leftExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
-            rightExtension.position = ActuationConstants.ExtensionConstants.EXTENDED
+            leftExtension.position = extensionPosition
+            rightExtension.position = extensionPosition
         }
     }
 
@@ -81,7 +91,7 @@ class Intake (hardwareMap: HardwareMap) {
         rightArm.position = armPosition
     }
 
-    fun updateExtensionState(state: ExtensionState, armPosition: Double = ActuationConstants.ArmConstants.DOWN) {
+    fun updateExtensionState(state: ExtensionState, armPosition: Double = ActuationConstants.ArmConstants.DOWN, extensionPosition: Double = ActuationConstants.ExtensionConstants.EXTENDED) {
         if (state == ExtensionState.IDLE)
             extensionTimer.reset()
         if (state == ExtensionState.EXTENDING)
@@ -92,7 +102,7 @@ class Intake (hardwareMap: HardwareMap) {
         when(extensionState) {
             ExtensionState.IDLE -> retract()
             ExtensionState.TRANSFERRING -> transfer()
-            ExtensionState.EXTENDING -> extend(armPosition)
+            ExtensionState.EXTENDING -> extend(extensionPosition, armPosition)
             ExtensionState.MANUAL_CONTROL -> deposit(armPosition)
         }
     }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.outoftheboxrobotics.photoncore.PhotonCore
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 import org.firstinspires.ftc.teamcode.subsystems.Intake
 import org.firstinspires.ftc.teamcode.subsystems.Lift
 
-@TeleOp(name = "TeleOp")
+@TeleOp(name = "MuthuOp")
 class MuthuOp: OpMode() {
     private lateinit var drive: SampleMecanumDrive
     private lateinit var intake: Intake
@@ -82,14 +83,14 @@ class MuthuOp: OpMode() {
                 }
 
                 intake.update(listOf(
-                    gamepad1.left_trigger > 0.5, // Hold to intake
+                    gamepad1.right_trigger > 0.5, // Hold to intake
                     gamepad2.dpad_down, // Low junction
-                    gamepad1.right_trigger > 0.5, // Lower arm
+                    gamepad1.left_trigger > 0.5, // Lower arm
                     gamepad2.triangle, // Cone stack top cone
                     gamepad2.circle, // Cone stack second cone
                     gamepad2.cross, // Cone stack third cone
                     gamepad2.square, // Cone stack fourth cone
-                    gamepadEvent1.leftBumper() // Toggle claw
+                    gamepadEvent1.leftBumper() || gamepadEvent2.leftBumper() // Toggle claw
                 ))
 
                 lift.update(listOf(
@@ -98,7 +99,7 @@ class MuthuOp: OpMode() {
                     gamepadEvent2.dPadUp(), // High junction
                     gamepad2.left_trigger > 0.5, // Manually lower lift
                     gamepad2.right_trigger > 0.5, // Manually raise lift
-                    gamepad1.right_bumper // Deposit
+                    gamepad1.right_bumper || gamepad2.right_bumper // Deposit
                 ))
 
                 timer.reset()
@@ -123,13 +124,13 @@ class MuthuOp: OpMode() {
 
     private fun cycle() {
         when (timer.milliseconds()) {
-            in 0.0 .. 400.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
-            in 400.0 .. 600.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
-            in 600.0 .. 1600.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
-            in 1600.0 ..  2000.0 -> intake.updateClawState(Intake.ClawState.OPEN)
-            in 2000.0 .. 2500.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
-            in 2500.0 .. 2800.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
-            in 2800.0 .. 3000.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 0.0 .. 600.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
+            in 600.0 .. 800.0 -> intake.updateClawState(Intake.ClawState.CLOSED)
+            in 800.0 .. 1800.0 -> intake.updateExtensionState(Intake.ExtensionState.TRANSFERRING)
+            in 1800.0 ..  2200.0 -> intake.updateClawState(Intake.ClawState.OPEN)
+            in 2200.0 .. 2700.0 -> lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[3])
+            in 2700.0 .. 3000.0 -> lift.updateDepositorState(Lift.DepositorState.UP)
+            in 3000.0 .. 3200.0 -> intake.updateExtensionState(Intake.ExtensionState.EXTENDING)
             else -> {
                 lift.updateDepositorState(Lift.DepositorState.DOWN)
                 lift.setLiftPosition(ActuationConstants.LiftConstants.LIFT_POSITIONS[0])

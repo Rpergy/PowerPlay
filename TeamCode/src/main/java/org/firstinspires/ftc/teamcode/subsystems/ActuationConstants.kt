@@ -7,10 +7,10 @@ class ActuationConstants {
     object LiftConstants {
         @JvmField var targetPosition = 0
         val LIFT_POSITIONS = arrayListOf(
-            64, // Transfer preset
-            68, // Idle preset
+            38, // Transfer preset
+            48, // Idle preset
             180, // Medium junction preset
-            330 // High junction preset
+            320 // High junction preset
         )
     }
 
@@ -23,33 +23,34 @@ class ActuationConstants {
 
     @Config
     object ExtensionConstants {
-        @JvmField var targetPosition = 0.463
-        const val RETRACTED = 0.463
-        const val TRANSFER = 0.483
-        const val EXTENDED = 0.529
+        @JvmField var targetPosition = 0.45
+        const val RETRACTED = 0.05
+        const val TRANSFER = 0.14
+        const val EXTENDED = 0.41
+        const val FULLY_EXTENDED = 0.48
     }
 
     @Config
     object ArmConstants {
-        @JvmField var targetPosition = 0.529
+        @JvmField var targetPosition = 0.27
         val coneStackPositions = arrayListOf(
-            0.467,
-            0.463,
-            0.459,
-            0.454,
-            0.450
+            0.84,
+            0.87,
+            0.9,
+            0.93,
+            0.96
         )
-        const val IDLE = 0.529
-        const val TRANSFER = 0.534
-        const val DOWN = 0.452
-        const val FIRST_JUNCTION = 0.495
+        const val IDLE = 0.22
+        const val TRANSFER = 0.19
+        const val DOWN = 0.95
+        const val FIRST_JUNCTION = 0.53
     }
 
     @Config
     object ClawConstants {
         @JvmField var targetPosition = 0.66
-        const val INIT = 0.68
-        const val OPEN = 0.665
-        const val CLOSED = 0.62
+        const val INIT = 0.65
+        const val OPEN = 0.64
+        const val CLOSED = 0.58
     }
 }
