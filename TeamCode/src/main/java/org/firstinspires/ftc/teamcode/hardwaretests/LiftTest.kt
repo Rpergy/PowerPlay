@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.subsystems.ActuationConstants
 
-@Disabled
 @TeleOp(name = "Lift Test")
 class LiftTest: OpMode() {
     private lateinit var lift: DcMotorEx
