@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -45,7 +44,7 @@ class MuthuOp: OpMode() {
     }
 
     override fun loop() {
-        PhotonCore.enable()
+        // PhotonCore.enable()
         drive.update()
 
         when (mode) {
